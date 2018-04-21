@@ -22,6 +22,8 @@ const fs = require('fs');
 
 const RSSDiscordSender = require('./RSSDiscordSender');
 
+const GithubIssues = require('./GithubIssues');
+
 const rssSenders = [];
 
 const update = '已新增';
@@ -33,6 +35,8 @@ client.login(auth.token);
 let BotInfo, ACGN, RSSConfig;
 
 let info;
+
+let githubIssues;
 
 const minNum = 0;
 
@@ -125,7 +129,7 @@ function otherCommand(arg, channel)// 骰指令用
 }
 
 function replyCommand(content, channel) {
-  if(contentIsImg(content)) {
+  if (contentIsImg(content)) {
     reply(3, content, channel);
   }
   else {
@@ -134,7 +138,6 @@ function replyCommand(content, channel) {
 }
 
 function contentIsImg(content) {
-
   return content.match(imageRegex) !== null;
 }
 
@@ -259,7 +262,7 @@ function reply(a, cmd, channel)// 推送訊息至頻道
       break;
 
     case 6:
-      embed = cmd;
+      embed = '雪乃からの伝言:\n' + cmd;
       flag = 1;
       break;
   }
@@ -288,6 +291,8 @@ client.on('ready', function(evt) {
   readFile();
 
   initRSSSenders();
+
+  githubIssues = new GithubIssues();
 });
 
 function initRSSSenders() {
@@ -301,7 +306,9 @@ function initRSSSenders() {
     config.urlLists.forEach((url) => {
       rssSender.addList(url);
     });
-    setTimeout(() => { rssSender.setNewItemHandler(newItemHandler); }, 20000);
+    setTimeout(() => {
+      rssSender.setNewItemHandler(newItemHandler);
+    }, 20000);
 
     rssSenders.push(rssSender);
   });
@@ -331,6 +338,18 @@ function writeNewConfigThenResetRSSSenders() {
     console.log('Saved!');
   });
   initRSSSenders();
+}
+
+function issuesToMessage(issues) {
+  return issues.slice(0, 10).reduce((str, issue) => {
+    return `${str}${issue.number} : ${issue.user} - ${issue.title}\n${issue.body}\nCommets : ${issue.comments}\n${issue.url}\n\n`;
+  }, '');
+}
+
+function commentsToMessage(comments) {
+  return comments.slice(0, 10).reduce((str, comment) => {
+    return `${str}${comment.user}:\n${comment.body}\n${comment.url}\n\n`;
+  }, '');
 }
 
 client.on('message', (message) => {
@@ -513,10 +532,45 @@ client.on('message', (message) => {
       case 'mail':
 
         break;
-        
+
       case 'readfile':
         readFile();
         break;
+
+      case 'issueslist':
+        githubIssues.getIssuesHandler((issues) => {
+          reply(6, issuesToMessage(issues), message.channel);
+        });
+        break;
+
+      case 'commentslistfor':
+        githubIssues.getCommentsHandler(type, (comments) => {
+          reply(6, commentsToMessage(comments), message.channel);
+        });
+
+        break;
+
+      case 'newissue':
+        const issue = {
+          'title': type,
+          'body': context
+        };
+
+        githubIssues.newIssueHandler(issue, (issues) => {
+          reply(6, issuesToMessage(issues), message.channel);
+        });
+        break;
+
+      case 'newcommentfor':
+        const comment = {
+          'body': context
+        };
+
+        githubIssues.newCommentHandler(type, comment, (comments) => {
+          reply(6, commentsToMessage(comments), message.channel);
+        });
+        break;
+
       default:
 
         if (forbid(message.channel)) {

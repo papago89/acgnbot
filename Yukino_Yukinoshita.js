@@ -342,19 +342,20 @@ function writeNewConfigThenResetRSSSenders() {
 
 function issuesToMessage(issues) {
   return issues.slice(0, 10).reduce((str, issue) => {
-    return `${str}${issue.number} : ${issue.user} - ${issue.title}\n${issue.body}\nCommets : ${issue.comments}\n${issue.url}\n\n`;
+    return `${str}${issue.number} : ${issue.title}\nCommets : ${issue.comments}\n${issue.url}\n\n`;
   }, '');
 }
 
 function commentsToMessage(comments) {
   return comments.slice(0, 10).reduce((str, comment) => {
-    return `${str}${comment.user}:\n${comment.body}\n${comment.url}\n\n`;
+    return `${str}${comment.body}\n${comment.url}\n\n`;
   }, '');
 }
 
 client.on('message', (message) => {
   if (message.content.substring(0, 2) == '%%') {
     const flag = false;
+    let userName = (message.member.nickname == null) ? message.author.username : message.member.nickname;
 
     let lit = message.content.split('%%')[1]; // 將命令去除用來識別的!號 ---> !abc dddd ---> abc dddd
 
@@ -365,7 +366,7 @@ client.on('message', (message) => {
     const context = lit.substr(type.length + 1);
     command = command.toLowerCase();
     logger.info(`
-            ${message.author.username}在${message.channel}說${message.content}
+            ${userName}在${message.channel}說${message.content}
             lit = ${lit}
             command = ${command}
             type = ${type}
@@ -539,35 +540,35 @@ client.on('message', (message) => {
 
       case 'issueslist':
         githubIssues.getIssuesHandler((issues) => {
-          reply(6, issuesToMessage(issues), message.channel);
+          reply(2, issuesToMessage(issues), message.channel);
         });
         break;
 
       case 'commentslistfor':
         githubIssues.getCommentsHandler(type, (comments) => {
-          reply(6, commentsToMessage(comments), message.channel);
+          reply(2, commentsToMessage(comments), message.channel);
         });
 
         break;
 
       case 'newissue':
         const issue = {
-          'title': type,
-          'body': context
+          'title': `${userName} - ${type}`,
+          'body': `${userName}:\n${context}`
         };
 
         githubIssues.newIssueHandler(issue, (issues) => {
-          reply(6, issuesToMessage(issues), message.channel);
+          reply(2, issuesToMessage(issues), message.channel);
         });
         break;
 
       case 'newcommentfor':
         const comment = {
-          'body': context
+          'body': `${userName}:\n${context}`
         };
 
         githubIssues.newCommentHandler(type, comment, (comments) => {
-          reply(6, commentsToMessage(comments), message.channel);
+          reply(2, commentsToMessage(comments), message.channel);
         });
         break;
 

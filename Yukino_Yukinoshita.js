@@ -490,9 +490,13 @@ client.on('message', (message) => {
         RSSConfig = new Array(RSSConfig[0]);
         writeNewConfigThenResetRSSSenders();
         break;
-      case mail:
+      case 'mail':
 
-
+        break;
+        
+      case 'readfile':
+        readFile();
+        break;
       default:
 
         if (forbid(message.channel)) {

@@ -39,14 +39,14 @@ const minNum = 0;
 const transporter = mail.createTransport({
   service: 'gmail',
   auth: {
-    user: '',
+    user: 'h.k.h94539@gmail.com',
     pass: ''
   }
 });
 
 const mailOptions = {
-  from: '',
-  to: '',
+  from: 'h.k.h94539@gmail.com',
+  to: 'euphokumiko.iem06@nctu.edu.tw',
   subject: 'BotInfo',
   text: 'That was easy!'
 };
@@ -291,6 +291,10 @@ client.on('ready', function(evt) {
 });
 
 function initRSSSenders() {
+  rssSenders.forEach((rssSender) => {
+    rssSender.destroy();
+  });
+  rssSenders.length = 0;
   RSSConfig.forEach((config) => {
     const channel = client.channels.get(config.channelId);
     const rssSender = new RSSDiscordSender(channel, config.filters, 60000);
@@ -486,13 +490,9 @@ client.on('message', (message) => {
         RSSConfig = new Array(RSSConfig[0]);
         writeNewConfigThenResetRSSSenders();
         break;
-      case 'mail':
+      case mail:
 
-        break;
-        
-      case 'readfile':
-        readFile();
-        break;
+
       default:
 
         if (forbid(message.channel)) {

@@ -138,6 +138,7 @@ function replyCommand(content, channel) {
 }
 
 function contentIsImg(content) {
+
   return content.match(imageRegex) !== null;
 }
 
@@ -340,6 +341,7 @@ function writeNewConfigThenResetRSSSenders() {
   initRSSSenders();
 }
 
+
 function issuesToMessage(issues) {
   return issues.slice(0, 10).reduce((str, issue) => {
     return `${str}${issue.number} : ${issue.title}\nCommets : ${issue.comments}\n${issue.url}\n\n`;
@@ -356,7 +358,6 @@ client.on('message', (message) => {
   if (message.content.substring(0, 2) == '%%') {
     const flag = false;
     let userName = (message.member.nickname == null) ? message.author.username : message.member.nickname;
-
     let lit = message.content.split('%%')[1]; // 將命令去除用來識別的!號 ---> !abc dddd ---> abc dddd
 
     let command = lit.split(/\s/)[0];// 找出命令的第一個斷點 以空白分開 ---> abc dddd ---> abc
@@ -533,7 +534,6 @@ client.on('message', (message) => {
       case 'mail':
 
         break;
-
       case 'readfile':
         readFile();
         break;
@@ -571,7 +571,6 @@ client.on('message', (message) => {
           reply(2, commentsToMessage(comments), message.channel);
         });
         break;
-
       default:
 
         if (forbid(message.channel)) {

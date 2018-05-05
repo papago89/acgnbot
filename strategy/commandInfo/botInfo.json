@@ -1,5 +1,4 @@
-[
-	{
+[{
 		"name": "qaq",
 		"help": "此指令不開放使用",
 		"content": [
@@ -34,6 +33,30 @@
 			"甚麼?有人說我一臉砲灰樣..? \n我倒是很好奇是哪個可悲的大腸桿菌連照鏡子都不會",
 			"作為失敗的典型，你算是很成功的。"
 		]
+	},
+	{
+		"name": "setRole",
+		"help": "若Bot有身分組管理權限則可以通過此指令要求Bot給予其他人身分組\n%%setRole @user 身分組名"
+	},
+	{
+		"name": "setGame",
+		"help": "%%setGame 貓派大勝利\n不解釋"
+	},
+	{
+		"name": "help",
+		"help": "不解釋"
+	},
+	{
+		"name": "say",
+		"help": "不解釋"
+	},
+	{
+		"name": "mumi",
+		"help": "自己的圖庫自己放\n%%mumi 預新增的指令 預新增的內容"
+	},
+	{
+		"name": "roll",
+		"help": "狂抽海抽十抽保底\n%%roll 指令 [1~10]"
 	},
 	{
 		"name": "longblack",

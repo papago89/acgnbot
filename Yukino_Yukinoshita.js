@@ -5,7 +5,6 @@ const express = require('express');
 const http = require('http');
 const query = require('querystring');
 const auth = require('./auth.json');
-const GithubIssues = require('./GithubIssues');
 const CommandHandler = require('./strategy/CommandHandler');
 
 const commandHandler = new CommandHandler();
@@ -170,23 +169,8 @@ client.on('ready', function(evt) {
   logger.info(client.user.username + ' - (' + client.user.id + ')');
 
 
-  githubIssues = new GithubIssues();
-
   commandHandler.processCommand('initRssSenders', {client: client, message: null});
 });
-
-
-function issuesToMessage(issues) {
-  return issues.slice(0, 10).reduce((str, issue) => {
-    return `${str}${issue.number} : ${issue.title}\nCommets : ${issue.comments}\n${issue.url}\n\n`;
-  }, '');
-}
-
-function commentsToMessage(comments) {
-  return comments.slice(0, 10).reduce((str, comment) => {
-    return `${str}${comment.body}\n${comment.url}\n\n`;
-  }, '');
-}
 
 client.on('message', (message) => {
   if (message.content.substring(0, 2) == '%%') {
@@ -220,45 +204,12 @@ client.on('message', (message) => {
 
         break;
 
-      case 'issueslist':
-        githubIssues.getIssuesHandler((issues) => {
-          reply(2, issuesToMessage(issues), message.channel);
-        });
-        break;
-
-      case 'commentslistfor':
-        githubIssues.getCommentsHandler(type, (comments) => {
-          reply(2, commentsToMessage(comments), message.channel);
-        });
-
-        break;
-
-      case 'newissue':
-        const issue = {
-          'title': `${userName} - ${type}`,
-          'body': `${userName}:\n${context}`
-        };
-
-        githubIssues.newIssueHandler(issue, (issues) => {
-          reply(2, issuesToMessage(issues), message.channel);
-        });
-        break;
-
-      case 'newcommentfor':
-        const comment = {
-          'body': `${userName}:\n${context}`
-        };
-
-        githubIssues.newCommentHandler(type, comment, (comments) => {
-          reply(2, commentsToMessage(comments), message.channel);
-        });
-        break;
 
       default:
         if (forbid(message.channel)) {
           break;
         }
-        createDiscordMessage(commandHandler.processCommand(message.content.split('%%')[1], {client: client, message: message}), message.channel);
+        createDiscordMessage(commandHandler.processCommand(message.content.split('%%')[1], {client: client, message: message, sendMessage: createDiscordMessage}), message.channel);
 
 
         break;
@@ -308,4 +259,3 @@ function newItemHandler(item) {
   }
   console.log(`${item.title}\n${item.link}`);
 }
-

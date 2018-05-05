@@ -5,6 +5,7 @@ const SayStrategy = require('./command/SayStrategy');
 const DiscordStrategy = require('./command/DiscordStrategy');
 const CommandMessage = require('./command/CommandMessage');
 const RssStrategy = require('./command/RssStrategy');
+const IssueStrategy = require('./command/IssueStrategy');
 
 const infoPath = __dirname + '/commandInfo';
 const botInfoPath = `${infoPath}/botInfo.json`;
@@ -17,12 +18,14 @@ class CommandHandler {
     this.strategies['sayStrategy'] = new SayStrategy();
     this.strategies['discordStrategy'] = new DiscordStrategy();
     this.strategies['rssStrategy'] = new RssStrategy();
+    this.strategies['issueStrategy'] = new IssueStrategy('https://api.github.com/repos/papago89/acgn-stock-bot');
 
     this.mappingStrategy = {};
     this.mappingStrategy['help'] = this.mappingStrategy['roll'] = this.mappingStrategy['mumi'] = this.strategies['otherStrategy'];
     this.mappingStrategy['say'] = this.strategies['sayStrategy'];
     this.mappingStrategy['setgame'] = this.mappingStrategy['setrole'] = this.strategies['discordStrategy'];
     this.mappingStrategy['newrss'] = this.mappingStrategy['deleteotherrss'] = this.mappingStrategy['initrsssenders'] = this.strategies['rssStrategy'];
+    this.mappingStrategy['issueslist'] = this.mappingStrategy['commentslistfor'] = this.mappingStrategy['newissue'] = this.mappingStrategy['newcommentfor'] = this.strategies['issueStrategy'];
 
     this.botInfo = fs.readFileSync(botInfoPath, 'utf-8');
     this.botInfo = JSON.parse(this.botInfo);

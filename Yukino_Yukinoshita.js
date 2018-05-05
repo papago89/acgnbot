@@ -1,34 +1,29 @@
 const Discord = require('discord.js');
-
 const logger = require('winston');
-
+const mail = require('nodemailer');
+const express = require('express');
+const http = require('http');
+const query = require('querystring');
 const auth = require('./auth.json');
+const RSSDiscordSender = require('./RSSDiscordSender');
+const GithubIssues = require('./GithubIssues');
+const CommandHandler = require('./strategy/CommandHandler.js');
+
+const commandHandler = new CommandHandler();
 
 const client = new Discord.Client({ autoReconnect: true });
 
-const mail = require('nodemailer');
-
-const express = require('express');
 
 const webpage = express();
-
-const http = require('http');
-
-const query = require('querystring');
 
 const port = 7777;
 
 const fs = require('fs');
 
-const RSSDiscordSender = require('./RSSDiscordSender');
-
-const GithubIssues = require('./GithubIssues');
-
 const rssSenders = [];
 
 const update = '已新增';
 
-const imageRegex = /http[s]?:\/\/.+\.((jpeg)|(jpg)|(png)|(gif)|(bmp))/;
 
 client.login(auth.token);
 
@@ -95,37 +90,6 @@ function updateBotInfo(BotInfo) {
     if (err) throw err;
     console.log('Saved!');
   });
-}
-
-function otherCommand(arg, channel)// 骰指令用
-{
-  let slag = 0, selectedContent = '';
-
-  for (let K = 0; K < BotInfo.length; K ++) {
-    if (BotInfo[K].name === arg) {
-      slag = 1;
-      selectedContent = BotInfo[K].content[random(BotInfo[K].content.length)];
-      replyCommand(selectedContent, channel);
-      break;
-    }
-  }
-
-  if (slag === 0) {
-    reply(4, BotInfo[1].content, channel);
-  }
-}
-
-function replyCommand(content, channel) {
-  if (contentIsImg(content)) {
-    reply(3, content, channel);
-  }
-  else {
-    reply(4, content, channel);
-  }
-}
-
-function contentIsImg(content) {
-  return content.match(imageRegex) !== null;
 }
 
 function forbid(channel)// 禁止的頻道
@@ -302,24 +266,6 @@ client.on('message', (message) => {
     let R, overflow;
 
     switch (command) {
-      case 'roll':
-
-        if (forbid(message.channel)) {
-          break;
-        }
-
-        if (Number(context) > 11) {
-          reply(5, '你有病嗎？沒空幫你骰這麼多次。當我很閒？', message.channel);
-
-          break;
-        }
-
-        for (R = 0; R < Number(context); R ++) {
-          otherCommand(type, message.channel);
-        }
-
-        break;
-
       case 'janken':// 猜拳模組,coding中
 
         random(3);
@@ -368,39 +314,6 @@ client.on('message', (message) => {
         const member = message.mentions.members.first();
 
         member.addRole(myRole).catch(console.error);
-
-        break;
-
-      case 'mumi':
-
-        let det = 0;
-
-        let stop = true;
-
-        if (context === null) {
-          stop = false;
-        }
-
-        if (stop) {
-          for (let U = 0; U < BotInfo.length; U ++) {
-            if (type === BotInfo[U].name) {
-              BotInfo[U].content.push(context);
-              det = 1;
-              break;
-            }
-          }
-          if (det === 0) {
-            BotInfo.push({
-              'name': type,
-              'content': [
-                context
-              ]
-            });
-          }
-          updateBotInfo(BotInfo);
-
-          reply(6, update + type, message.channel);
-        }
 
         break;
 
@@ -465,15 +378,38 @@ client.on('message', (message) => {
         break;
 
       default:
-
         if (forbid(message.channel)) {
           break;
         }
+        createDiscordMessage(commandHandler.processCommand(message.content), message.channel);
 
-        otherCommand(command, message.channel);
 
         break;
     }
   }
 });
 
+function createDiscordMessage(dataArray, channel) {
+  let embed;
+  dataArray.forEach((data) => {
+    if (data.image) {
+      embed = new Discord.RichEmbed()
+        .setImage(data.content);
+    }
+    else if (data.embed) {
+      embed = new Discord.RichEmbed()
+        .setTitle('message')
+        .setThumbnail('http://i.imgur.com/T4y0egb.jpg')
+        .addField('雪乃が教えてあげる', data.content)
+        .setFooter('比企谷雪乃')
+        .setTimestamp();
+      if (data.extra !== undefined) {
+        embed = embed.addField('雪乃からの伝言', data.extra);
+      }
+    }
+    else {
+      embed = data.content;
+    }
+    channel.send(embed);
+  });
+}

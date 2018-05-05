@@ -32,7 +32,7 @@ const imageRegex = /http[s]?:\/\/.+\.((jpeg)|(jpg)|(png)|(gif)|(bmp))/;
 
 client.login(auth.token);
 
-let BotInfo, ACGN, RSSConfig;
+let BotInfo, RSSConfig;
 
 let info;
 
@@ -85,22 +85,9 @@ let highpricetime, lowquantime, pricerefresh, help;
 function readFile()// 讀取檔案
 {
   BotInfo = fs.readFileSync('BotInfo.json', 'utf-8');
-  ACGN = fs.readFileSync('ACGN.json', 'utf-8');
   RSSConfig = fs.readFileSync('RSSConfig.json', 'utf-8');
   BotInfo = JSON.parse(BotInfo);
-  ACGN = JSON.parse(ACGN);
   RSSConfig = JSON.parse(RSSConfig);
-}
-
-function writeToFile(highpricetime, lowquantime, pricerefresh)// 將文字寫入JSON
-{
-  ACGN[0].content = highpricetime;
-  ACGN[1].content = lowquantime;
-  ACGN[2].content = pricerefresh;
-  fs.writeFile('ACGN.json', JSON.stringify(ACGN, null, '\t'), 'utf-8', function(err) {
-    if (err) throw err;
-    console.log('Saved!');
-  });
 }
 
 function updateBotInfo(BotInfo) {

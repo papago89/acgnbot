@@ -1,4 +1,4 @@
-const Strategy = ('Strategy.js');
+const Strategy = ('./Strategy');
 
 class DiscordStrategy extends Strategy.constructor {
   constructor() {

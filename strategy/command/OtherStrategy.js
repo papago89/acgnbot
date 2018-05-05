@@ -1,4 +1,4 @@
-const Strategy = ('Strategy.js');
+const Strategy = ('./Strategy');
 
 const imageRegex = /http[s]?:\/\/.+\.((jpeg)|(jpg)|(png)|(gif)|(bmp))/;
 
@@ -66,7 +66,7 @@ class OtherStrategy extends Strategy.constructor {
       else {
         commandInfo.content.push(commandMessage.context);
       }
-      handler.updateBotInfo();
+      handler.updateJsonFile();
 
       return [{
         embed: true,

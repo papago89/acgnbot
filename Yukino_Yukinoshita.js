@@ -5,9 +5,8 @@ const express = require('express');
 const http = require('http');
 const query = require('querystring');
 const auth = require('./auth.json');
-const RSSDiscordSender = require('./RSSDiscordSender');
 const GithubIssues = require('./GithubIssues');
-const CommandHandler = require('./strategy/CommandHandler.js');
+const CommandHandler = require('./strategy/CommandHandler');
 
 const commandHandler = new CommandHandler();
 
@@ -19,8 +18,6 @@ const webpage = express();
 const port = 7777;
 
 const fs = require('fs');
-
-const rssSenders = [];
 
 const update = '已新增';
 
@@ -76,14 +73,6 @@ logger.level = 'debug';
 let highpricetime, lowquantime, pricerefresh, help;
 
 // 以上不解釋
-
-function readFile()// 讀取檔案
-{
-  BotInfo = fs.readFileSync('BotInfo.json', 'utf-8');
-  RSSConfig = fs.readFileSync('RSSConfig.json', 'utf-8');
-  BotInfo = JSON.parse(BotInfo);
-  RSSConfig = JSON.parse(RSSConfig);
-}
 
 function updateBotInfo(BotInfo) {
   fs.writeFile('BotInfo.json', JSON.stringify(BotInfo, null, '\t'), 'utf-8', function(err) {
@@ -180,57 +169,12 @@ client.on('ready', function(evt) {
 
   logger.info(client.user.username + ' - (' + client.user.id + ')');
 
-  readFile();
-
-  initRSSSenders();
 
   githubIssues = new GithubIssues();
+
+  commandHandler.processCommand('initRssSenders', {client: client, message: null});
 });
 
-function initRSSSenders() {
-  rssSenders.forEach((rssSender) => {
-    rssSender.destroy();
-  });
-  rssSenders.length = 0;
-  RSSConfig.forEach((config) => {
-    const channel = client.channels.get(config.channelId);
-    const rssSender = new RSSDiscordSender(channel, config.filters, 60000);
-    config.urlLists.forEach((url) => {
-      rssSender.addList(url);
-    });
-    setTimeout(() => {
-      rssSender.setNewItemHandler(newItemHandler);
-    }, 20000);
-
-    rssSenders.push(rssSender);
-  });
-}
-
-// this: object from emiter's caller --> RSSFeedFilter
-function newItemHandler(item) {
-  if (this.checkItem(item)) {
-    const message = `${item.title}
-${item.link}`;
-
-    const embed = new Discord.RichEmbed()
-      .setTitle('news')
-      .setThumbnail('http://i.imgur.com/T4y0egb.jpg')
-      .setColor(3447003)
-      .addField('雪乃からの伝言', message)
-      .setFooter('比企谷雪乃')
-      .setTimestamp();
-    this.channel.send(embed);
-  }
-}
-
-
-function writeNewConfigThenResetRSSSenders() {
-  fs.writeFile('RSSConfig.json', JSON.stringify(RSSConfig, null, '\t'), 'utf-8', function(err) {
-    if (err) throw err;
-    console.log('Saved!');
-  });
-  initRSSSenders();
-}
 
 function issuesToMessage(issues) {
   return issues.slice(0, 10).reduce((str, issue) => {
@@ -272,30 +216,8 @@ client.on('message', (message) => {
 
         break;
 
-      case 'newrss':
-        RSSConfig.push(JSON.parse(lit));
-        writeNewConfigThenResetRSSSenders();
-        /*
-%%newRSS {
-    "channelId": "432434726129631232",
-    "urlLists": ["https://www.ptt.cc/atom/allpost.xml"],
-    "filters": [{
-        "regex": "[a-zA-Z0-9]",
-        "type": "title"
-    }]
-}
-        */
-        break;
-      case 'deleteotherrss':
-        RSSConfig = new Array(RSSConfig[0]);
-        writeNewConfigThenResetRSSSenders();
-        break;
       case 'mail':
 
-        break;
-
-      case 'readfile':
-        readFile();
         break;
 
       case 'issueslist':
@@ -368,3 +290,22 @@ function createDiscordMessage(dataArray, channel) {
     channel.send(embed);
   });
 }
+
+// this: object from emiter's caller --> RssFeedFilter
+function newItemHandler(item) {
+  if (this.checkItem(item)) {
+    const message = `${item.title}\n${item.link}`;
+
+    const embed = new Discord.RichEmbed()
+      .setTitle('news')
+      .setThumbnail('http://i.imgur.com/T4y0egb.jpg')
+      .setColor(3447003)
+      .addField('雪乃が教えてあげる', message)
+      .setFooter('比企谷雪乃')
+      .setTimestamp();
+    this.channel.send(embed);
+
+  }
+  console.log(`${item.title}\n${item.link}`);
+}
+

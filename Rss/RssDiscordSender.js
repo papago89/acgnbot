@@ -1,7 +1,7 @@
-const RSSFeedFilter = require('./RSSFeedFilter');
+const RssFeedFilter = require('./RssFeedFilter');
 const Discord = require('discord.js');
 
-class RSSDiscordSender extends RSSFeedFilter {
+class RssDiscordSender extends RssFeedFilter {
   constructor(channel, filter = {}, cycleMilliseconds = 60000) {
     super(filter, cycleMilliseconds);
     this.channel = channel;
@@ -9,4 +9,4 @@ class RSSDiscordSender extends RSSFeedFilter {
 
 }
 
-module.exports = RSSDiscordSender;
+module.exports = RssDiscordSender;

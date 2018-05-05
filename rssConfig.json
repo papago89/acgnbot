@@ -1,0 +1,33 @@
+[
+	{
+		"channelId": "354972145798873114",
+		"urlLists": [
+			"https://www.ptt.cc/atom/acgn_stock.xml"
+		],
+		"filters": [
+			{
+				"regex": "\\[提案\\]",
+				"type": "title"
+			}
+		]
+	},
+	{
+		"channelId": "411022014552473620",
+		"urlLists": [
+			"https://www.ptt.cc/atom/c_chat.xml",
+			"https://www.ptt.cc/atom/Baseball.xml",
+			"https://www.ptt.cc/atom/NBA.xml",
+                        "https://www.ptt.cc/atom/gossiping.xml"
+		],
+		"filters": [
+			{
+				"type": "title",
+				"regex": "[a-zA-Z]+"
+			},
+			{
+				"type": "description",
+				"regex": "[0-9]+"
+			}
+		]
+	}
+]

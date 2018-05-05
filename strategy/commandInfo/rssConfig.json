@@ -1,0 +1,12 @@
+[
+	{
+		"channelId": "411022014552473620",
+		"urlLists": [
+			"https://www.ptt.cc/atom/c_chat.xml",
+			"https://www.ptt.cc/atom/Baseball.xml",
+			"https://www.ptt.cc/atom/NBA.xml",
+			"https://www.ptt.cc/atom/gossiping.xml"
+		],
+		"filters": []
+	}
+]

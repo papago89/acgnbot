@@ -1,18 +1,21 @@
 [
 	{
 		"name": "qaq",
+		"help": "此指令不開放使用",
 		"content": [
 			"哀，一群人只會在需要的時候才叫我"
 		]
 	},
 	{
 		"name": "fuck",
+		"help": "此指令不開放使用",
 		"content": [
 			"...甚麼都不懂就乖乖滾去看指令，不要只會像隻草履蟲一樣到處蠕動，單細胞生物。"
 		]
 	},
 	{
 		"name": "yuki",
+		"help": "此指令不開放使用",
 		"content": [
 			"看來，閣下的記憶力還停留在阿米巴原蟲等級呢~~\n我就勉為其難幫你記住吧",
 			"哀，這種記憶力...\n幫你記住了，跪下來感謝我吧",
@@ -243,8 +246,7 @@
 			"https://i.imgur.com/gPXst9v.jpg",
 			"https://i.imgur.com/1Zm53rp.png",
 			"https://i.imgur.com/vCv8535.jpg"
-    		]
-
+		]
 	},
 	{
 		"name": "rocket",
@@ -348,10 +350,10 @@
 	},
 	{
 		"name": "kancolle",
-    		"content": [
-      			"https://i.imgur.com/cZACtTb.jpg",
-      			"https://i.imgur.com/VIbRmb9.jpg",
+		"content": [
+			"https://i.imgur.com/cZACtTb.jpg",
+			"https://i.imgur.com/VIbRmb9.jpg",
 			"https://i.imgur.com/rDiJht0.png"
-    		]
+		]
 	}
 ]

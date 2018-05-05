@@ -1,6 +1,6 @@
 const RssFeedEmitter = require('rss-feed-emitter');
 
-class RSSFeedFilter {
+class RssFeedFilter {
   constructor(filter = [], cycleMilliseconds = 60000) {
     this.feederList = new RssFeedEmitter();
     this.filter = filter;
@@ -35,4 +35,4 @@ class RSSFeedFilter {
   }
 }
 
-module.exports = RSSFeedFilter;
+module.exports = RssFeedFilter;

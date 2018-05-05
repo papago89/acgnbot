@@ -1,6 +1,6 @@
 const request = require('request');
 
-const token = require('./auth.json').githubToken;
+const token = require('../auth.json').githubToken;
 
 function issuesParser(issues) {
   return [].concat(issues).map((issue) => {

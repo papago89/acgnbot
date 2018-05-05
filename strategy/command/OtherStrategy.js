@@ -75,11 +75,34 @@ class OtherStrategy extends Strategy.constructor {
       }];
     };
 
+    this.commandFunction['help'] = (commandMessage, handler) => {
+      let commandHelp = '現有特殊指令:\n';
+      let commandList = handler.botInfo;
+      let i;
+
+      for (i = 0; i < commandList.length; ++i) {
+        if (commandList[i].help === undefined) {
+          break;
+        }
+        commandHelp = `${commandHelp}${commandList[i].name}: ${commandList[i].help}\n`;
+      }
+      commandHelp = `${commandHelp}mumi新增指令:\n`;
+      for ( ; i < commandList.length; ++i) {
+        commandHelp = `${commandHelp}${commandList[i].name} `;
+      }
+
+      return [{
+        embed: true,
+        image: false,
+        content: commandHelp
+      }];
+    }
+
     this.commandFunction['infoSelect'] = (command, handler) => {
       let commandInfo = findInfo(command, handler.botInfo);
       let content;
 
-      if (commandInfo === undefined) {
+      if (commandInfo === undefined || commandInfo.help !== undefined) {
         content = handler.botInfo[1].content[0];
       }
       else {

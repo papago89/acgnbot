@@ -284,23 +284,6 @@ client.on('message', (message) => {
 
         break;
 
-      case 'help':
-
-        if (forbid(message.channel)) {
-          break;
-        }
-
-        var msg = '現有指令\n';
-
-        for (let R = 0; R < BotInfo.length; R ++) {
-          msg += BotInfo[R].name;
-          msg += '\n';
-        }
-
-        message.channel.send(msg);
-
-        break;
-
       case 'setgame':
 
         client.user.setGame(type);

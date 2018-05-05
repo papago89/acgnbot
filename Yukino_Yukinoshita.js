@@ -141,55 +141,6 @@ function contentIsImg(content) {
   return content.match(imageRegex) !== null;
 }
 
-function save(type, context, user, channel)// 寫入資訊的前置作業
-{
-  readFile();
-
-  if (detect(user)) {
-    return;
-  }
-
-  type = type.toLowerCase();
-
-  switch (type) {
-    case 'a':
-
-      lowquantime = ACGN[1].content;
-
-      pricerefresh = ACGN[2].content;
-
-      writeToFile(context, lowquantime, pricerefresh);
-
-      reply(1, BotInfo[2].content[random(BotInfo[2].content.length)], channel);
-
-      break;
-
-    case 'b':
-
-      highpricetime = ACGN[0].content;
-
-      pricerefresh = ACGN[2].content;
-
-      writeToFile(highpricetime, context, pricerefresh);
-
-      reply(1, BotInfo[2].content[random(BotInfo[2].content.length)], channel);
-
-      break;
-
-    case 'c':
-
-      highpricetime = ACGN[0].content;
-
-      lowquantime = ACGN[1].content;
-
-      writeToFile(highpricetime, lowquantime, context);
-
-      reply(1, BotInfo[2].content[random(BotInfo[2].content.length)], channel);
-
-      break;
-  }
-}
-
 function forbid(channel)// 禁止的頻道
 {
   if ((channel.name == 'hall') || (channel.name == 'lobby') || (channel.name == 'plans-rule-suggestion')) {
@@ -215,16 +166,6 @@ function reply(a, cmd, channel)// 推送訊息至頻道
 {
   let flag = 0;
   switch (a) {
-    case 1:// 儲存指令
-      embed = new Discord.RichEmbed()
-        .setTitle('save message')
-        .setThumbnail('http://i.imgur.com/T4y0egb.jpg')
-        .setColor(3447003)
-        .addField('雪乃からの伝言', cmd)
-        .setFooter('比企谷雪乃')
-        .setTimestamp();
-      break;
-
     case 2:// 讀取指令
       embed = new Discord.RichEmbed()
         .setTitle('message')
@@ -401,42 +342,6 @@ client.on('message', (message) => {
       case 'save':
 
         save(type, context, message.author.username, message.channel);
-
-        break;
-
-      case 'a':
-
-        if (forbid(message.channel)) {
-          break;
-        }
-
-        info = ACGN[0].content;
-
-        reply(2, info, message.channel);
-
-        break;
-
-      case 'b':
-
-        if (forbid(message.channel)) {
-          break;
-        }
-
-        info = ACGN[1].content;
-
-        reply(2, info, message.channel);
-
-        break;
-
-      case 'c':
-
-        if (forbid(message.channel)) {
-          break;
-        }
-
-        info = ACGN[2].content;
-
-        reply(2, info, message.channel);
 
         break;
 

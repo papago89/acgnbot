@@ -19,10 +19,11 @@ class CommandHandler {
     this.strategies['rssStrategy'] = new RssStrategy(handles.rssHandle);
 
     this.mappingStrategy = {};
-    this.mappingStrategy['help'] = this.mappingStrategy['roll'] = this.mappingStrategy['mumi'] = this.strategies['otherStrategy'];
-    this.mappingStrategy['say'] = this.strategies['sayStrategy'];
-    this.mappingStrategy['setgame'] = this.mappingStrategy['setrole'] = this.strategies['discordStrategy'];
-    this.mappingStrategy['newrss'] = this.mappingStrategy['deleteotherrss'] = this.mappingStrategy['initrsssenders'] = this.strategies['rssStrategy'];
+    Object.entries(this.strategies).forEach((strategy) => {
+      Object.keys(strategy[1].commandFunction).forEach((commandName) => {
+        this.mappingStrategy[commandName] = this.strategies[strategy[0]];
+      });
+    });
 
     this.botInfo = fs.readFileSync(botInfoPath, 'utf-8');
     this.botInfo = JSON.parse(this.botInfo);

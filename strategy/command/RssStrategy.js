@@ -2,26 +2,11 @@ const Discord = require('discord.js');
 const Strategy = ('./Strategy');
 const RssDiscordSender = require('../../Rss/RssDiscordSender');
 
-// this: object from emiter's caller --> RssFeedFilter
-function newItemHandler(item) {
-  if (this.checkItem(item)) {
-    const message = `${item.title}\n${item.link}`;
-
-    const embed = new Discord.RichEmbed()
-      .setTitle('news')
-      .setThumbnail('http://i.imgur.com/T4y0egb.jpg')
-      .setColor(3447003)
-      .addField('雪乃が教えてあげる', message)
-      .setFooter('比企谷雪乃')
-      .setTimestamp();
-    this.channel.send(embed);
-  }
-}
 
 const rssSenders = [];
 
 class RssStrategy extends Strategy.constructor {
-  constructor() {
+  constructor(newItemHandler) {
     super();
     this.commandFunction = {};
     this.commandFunction['newrss'] = (commandMessage, discordObject, handler) => {

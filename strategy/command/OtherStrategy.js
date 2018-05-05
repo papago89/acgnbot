@@ -117,6 +117,7 @@ class OtherStrategy extends Strategy.constructor {
       }];
     };
   }
+
   processCommand(commandMessage, discordObject, handler) {
     if (this.commandFunction[commandMessage.command] !== undefined) {
 

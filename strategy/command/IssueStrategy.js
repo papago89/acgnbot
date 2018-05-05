@@ -15,14 +15,14 @@ function commentsToMessage(comments) {
 }
 
 class IssueStrategy extends Strategy.constructor {
-  constructor(url) {
+  constructor(url, handler) {
     super();
     this.commandFunction = {};
     this.githubIssues = new GithubIssues(url);
 
     this.commandFunction['issueslist'] = (commandMessage, discordObject) => {
       this.githubIssues.getIssuesHandler((issues) => {
-        discordObject.sendMessage([{embed:true, image:false, content:issuesToMessage(issues)}], discordObject.message.channel);
+        handler([{embed:true, image:false, content:issuesToMessage(issues)}], discordObject.message.channel);
       });
 
       return [];
@@ -30,7 +30,7 @@ class IssueStrategy extends Strategy.constructor {
 
     this.commandFunction['commentslistfor'] = (commandMessage, discordObject) => {
       this.githubIssues.getCommentsHandler(commandMessage.type, (comments) => {
-        discordObject.sendMessage([{embed:true, image:false, content:commentsToMessage(comments)}], discordObject.message.channel);
+        handler([{embed:true, image:false, content:commentsToMessage(comments)}], discordObject.message.channel);
       });
 
       return [];
@@ -44,7 +44,7 @@ class IssueStrategy extends Strategy.constructor {
       };
 
       this.githubIssues.newIssueHandler(issue, (issues) => {
-        discordObject.sendMessage([{embed:true, image:false, content:issuesToMessage(issues)}], discordObject.message.channel);
+        handler([{embed:true, image:false, content:issuesToMessage(issues)}], discordObject.message.channel);
       });
 
       return [];
@@ -57,12 +57,13 @@ class IssueStrategy extends Strategy.constructor {
       };
 
       this.githubIssues.newCommentHandler(commandMessage.type, comment, (comments) => {
-        discordObject.sendMessage([{embed:true, image:false, content:commentsToMessage(comments)}], discordObject.message.channel);
+        handler([{embed:true, image:false, content:commentsToMessage(comments)}], discordObject.message.channel);
       });
 
       return [];
     };
   }
+
   processCommand(commandMessage, discordObject, handler) {
 
     return this.commandFunction[commandMessage.command](commandMessage, discordObject);

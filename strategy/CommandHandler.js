@@ -11,12 +11,12 @@ const botInfoPath = `${infoPath}/botInfo.json`;
 const rssConfigPath = `${infoPath}/rssConfig.json`;
 
 class CommandHandler {
-  constructor() {
+  constructor(handles) {
     this.strategies = {};
     this.strategies['otherStrategy'] = new OtherStrategy(); // special strategy
     this.strategies['sayStrategy'] = new SayStrategy();
     this.strategies['discordStrategy'] = new DiscordStrategy();
-    this.strategies['rssStrategy'] = new RssStrategy();
+    this.strategies['rssStrategy'] = new RssStrategy(handles.rssHandle);
 
     this.mappingStrategy = {};
     this.mappingStrategy['help'] = this.mappingStrategy['roll'] = this.mappingStrategy['mumi'] = this.strategies['otherStrategy'];

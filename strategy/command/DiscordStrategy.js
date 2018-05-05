@@ -17,6 +17,7 @@ class DiscordStrategy extends Strategy.constructor {
       return [];
     };
   }
+
   processCommand(commandMessage, discordObject, handler) {
 
     return this.commandFunction[commandMessage.command](commandMessage, discordObject);

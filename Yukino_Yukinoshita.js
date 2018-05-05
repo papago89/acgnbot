@@ -7,7 +7,7 @@ const query = require('querystring');
 const auth = require('./auth.json');
 const CommandHandler = require('./strategy/CommandHandler');
 
-const commandHandler = new CommandHandler();
+const commandHandler = new CommandHandler({rssHandle: newItemHandler, issueHandle: createDiscordMessage});
 
 const client = new Discord.Client({ autoReconnect: true });
 
@@ -245,17 +245,6 @@ function createDiscordMessage(dataArray, channel) {
 // this: object from emiter's caller --> RssFeedFilter
 function newItemHandler(item) {
   if (this.checkItem(item)) {
-    const message = `${item.title}\n${item.link}`;
-
-    const embed = new Discord.RichEmbed()
-      .setTitle('news')
-      .setThumbnail('http://i.imgur.com/T4y0egb.jpg')
-      .setColor(3447003)
-      .addField('雪乃が教えてあげる', message)
-      .setFooter('比企谷雪乃')
-      .setTimestamp();
-    this.channel.send(embed);
-
+    createDiscordMessage([{embed: true, image:false, content: `${item.title}\n${item.link}`}], this.channel);
   }
-  console.log(`${item.title}\n${item.link}`);
 }

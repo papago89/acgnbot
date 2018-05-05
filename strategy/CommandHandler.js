@@ -2,6 +2,7 @@ const fs = require('fs');
 
 const OtherStrategy = require('./command/OtherStrategy.js');
 const SayStrategy = require('./command/SayStrategy.js');
+const DiscordStrategy = require('./command/DiscordStrategy.js');
 const CommandMessage = require('./command/CommandMessage.js');
 
 const infoPath = __dirname + '/commandInfo';
@@ -12,10 +13,12 @@ class CommandHandler {
     this.strategies = {};
     this.strategies['otherStrategy'] = new OtherStrategy(); // special strategy
     this.strategies['sayStrategy'] = new SayStrategy();
+    this.strategies['discordStrategy'] = new DiscordStrategy();
 
     this.mappingStrategy = {};
     this.mappingStrategy['help'] = this.mappingStrategy['roll'] = this.mappingStrategy['mumi'] = this.strategies['otherStrategy'];
     this.mappingStrategy['say'] = this.strategies['sayStrategy'];
+    this.mappingStrategy['setgame'] = this.mappingStrategy['setrole'] = this.strategies['discordStrategy'];
 
     this.botInfo = fs.readFileSync(botInfoPath, 'utf-8');
     this.botInfo = JSON.parse(this.botInfo);
@@ -23,7 +26,6 @@ class CommandHandler {
 
   processCommand(message, discordObject) {
     let command, lit;
-    message = message.split('%%')[1];
     command = message.split(/\s/)[0].toLowerCase();
     lit = message.substr(command.length + 1);
 

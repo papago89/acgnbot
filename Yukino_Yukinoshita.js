@@ -272,22 +272,6 @@ client.on('message', (message) => {
 
         break;
 
-      case 'setgame':
-
-        client.user.setGame(type);
-
-        break;
-
-      case 'setrole':
-
-        const myRole = message.guild.roles.find('name', context);
-
-        const member = message.mentions.members.first();
-
-        member.addRole(myRole).catch(console.error);
-
-        break;
-
       case 'newrss':
         RSSConfig.push(JSON.parse(lit));
         writeNewConfigThenResetRSSSenders();
@@ -352,7 +336,7 @@ client.on('message', (message) => {
         if (forbid(message.channel)) {
           break;
         }
-        createDiscordMessage(commandHandler.processCommand(message.content), message.channel);
+        createDiscordMessage(commandHandler.processCommand(message.content.split('%%')[1], {client: client, message: message}), message.channel);
 
 
         break;

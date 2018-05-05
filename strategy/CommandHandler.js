@@ -1,6 +1,7 @@
 const fs = require('fs');
 
 const OtherStrategy = require('./command/OtherStrategy.js');
+const SayStrategy = require('./command/SayStrategy.js');
 const CommandMessage = require('./command/CommandMessage.js');
 
 const infoPath = __dirname + '/commandInfo';
@@ -10,9 +11,11 @@ class CommandHandler {
   constructor() {
     this.strategies = {};
     this.strategies['otherStrategy'] = new OtherStrategy(); // special strategy
+    this.strategies['sayStrategy'] = new SayStrategy();
 
     this.mappingStrategy = {};
     this.mappingStrategy['help'] = this.mappingStrategy['roll'] = this.mappingStrategy['mumi'] = this.strategies['otherStrategy'];
+    this.mappingStrategy['say'] = this.strategies['sayStrategy'];
 
     this.botInfo = fs.readFileSync(botInfoPath, 'utf-8');
     this.botInfo = JSON.parse(this.botInfo);

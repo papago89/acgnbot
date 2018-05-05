@@ -272,18 +272,6 @@ client.on('message', (message) => {
 
         break;
 
-      case 'save':
-
-        save(type, context, message.author.username, message.channel);
-
-        break;
-
-      case 'say':
-
-        reply(6, type, message.channel);
-
-        break;
-
       case 'setgame':
 
         client.user.setGame(type);
